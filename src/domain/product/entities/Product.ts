@@ -28,6 +28,38 @@ export class Product {
         );
     }
 
+    static reconstitute(
+        id: string,
+        name: string,
+        description: string,
+        price: number,
+        stockQuantity: number,
+    ): Product {
+        return new Product(
+            ProductId.create(id),
+            ProductName.create(name),
+            ProductDescription.create(description),
+            Money.create(price),
+            Stock.create(stockQuantity)
+        );
+    }
+
+    getName(): string {
+        return this.name.getValue();
+    }
+    getDescription(): string {
+        return this.description.getValue();
+    }
+    getPrice(): number {
+        return this.price.getAmount();
+    }
+    getStock(): number {
+        return this.stock.getQuantity();
+    }
+    getId(): string {
+        return this.id.getValue();
+    }
+
     toJSON() {
         return {
             id: this.id.getValue(),

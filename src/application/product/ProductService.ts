@@ -1,7 +1,7 @@
 import type { IProductRepository } from '../../domain/product/repositories/IProductRepository';
 import { Product } from '../../domain/product/entities/Product';
 import { ProductId } from '../../domain/product/value-objects/ProductId';
-import type { CreateProductDTO, ProductResponseDTO } from './dto/ProductDTOs';
+import type { CreateProductDTO, UpdateProductDTO, ProductResponseDTO } from './dto/ProductDTOs';
 import { EntityNotFoundError } from '../../domain/shared/errors/DomainError';
 
 
@@ -16,11 +16,35 @@ export class ProductService {
       dto.stock,
     );
 
+    if (await this.productRepository.findById(ProductId.create(product.getId()))) {
+      throw new Error('Product already exists');
+    }
+
     await this.productRepository.save(product);
 
     return this.toDTO(product);
   }
 
+
+  async updateProduct(id: string, dto: UpdateProductDTO): Promise<ProductResponseDTO> {
+    const product = await this.productRepository.findById(ProductId.create(id));
+
+    if (!product) {
+      throw new EntityNotFoundError('Product not found');
+    }
+
+    const updated_product = Product.reconstitute(
+      id,
+      dto.name ?? product.getName(),
+      dto.description ?? product.getDescription(),
+      dto.price ?? product.getPrice(),
+      dto.stock ?? product.getStock(),
+    );
+
+    await this.productRepository.save(updated_product);
+
+    return this.toDTO(updated_product);
+  }
 
   async getProduct(id: string): Promise<ProductResponseDTO> {
     const product = await this.productRepository.findById(ProductId.create(id));

@@ -23,14 +23,6 @@ describe('InMemoryProductRepository', () => {
       expect(found?.toJSON()).toEqual(productJson);
     });
 
-    it('should throw error when saving a product with existing id', async () => {
-      const product = Product.create('Original Product', 'Original Description', 50.00, 5);
-
-      await repository.save(product);
-
-      await expect(repository.save(product)).rejects.toThrow('Product with id already exists');
-    });
-
     it('should save multiple different products', async () => {
       const product1 = Product.create('Product 1', 'Description 1', 10.99, 5);
       const product2 = Product.create('Product 2', 'Description 2', 20.99, 10);

@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ProductService } from './ProductService';
 import type { IProductRepository } from '../../domain/product/repositories/IProductRepository';
 import { Product } from '../../domain/product/entities/Product';
-import type { CreateProductDTO } from './dto/ProductDTOs';
+import type { CreateProductDTO, UpdateProductDTO } from './dto/ProductDTOs';
 
 describe('ProductService', () => {
   let productService: ProductService;
@@ -53,7 +53,17 @@ describe('ProductService', () => {
       expect(mockRepository.save).toHaveBeenCalledOnce();
     });
 
-
+    it('should throw error when product already exists', async () => {
+      vi.mocked(mockRepository.findById).mockResolvedValue(Product.create('Test Product', 'Test Description', 99.99, 10));
+      vi.mocked(mockRepository.save).mockResolvedValue(undefined);
+      const dto: CreateProductDTO = {
+        name: 'Test Product',
+        description: 'Test Description',
+        price: 99.99,
+        stock: 10,
+      };
+      await expect(productService.createProduct(dto)).rejects.toThrow('Product already exists');
+    });
 
   });
 
@@ -141,5 +151,50 @@ describe('ProductService', () => {
       expect(result[0]).toHaveProperty('stock');
     });
   });
+
+  describe('updateProduct', () => {
+    it('should update a product successfully', async () => {
+      vi.mocked(mockRepository.findById).mockResolvedValue(Product.create('Test Product', 'Test Description', 99.99, 10));
+      vi.mocked(mockRepository.save).mockResolvedValue(undefined);
+      const dto: UpdateProductDTO = {
+        name: 'Updated Product',
+        description: 'Updated Description',
+        price: 199.99,
+        stock: 20,
+      };
+      const result = await productService.updateProduct('test-id-123', dto);
+      expect(result).toBeDefined();
+      expect(result.name).toBe('Updated Product');
+      expect(result.description).toBe('Updated Description');
+      expect(result.price).toBe(199.99);
+      expect(result.stock).toBe(20);
+    });
+
+    it('should call repository save method', async () => {
+      vi.mocked(mockRepository.findById).mockResolvedValue(Product.create('Test Product', 'Test Description', 99.99, 10));
+      vi.mocked(mockRepository.save).mockResolvedValue(undefined);
+      const dto: UpdateProductDTO = {
+        name: 'Updated Product',
+        description: 'Updated Description',
+        price: 199.99,
+        stock: 20,
+      };
+      await productService.updateProduct('test-id-123', dto);
+      expect(mockRepository.save).toHaveBeenCalledOnce();
+    });
+    
+    it('should throw error when product does not exist', async () => {
+      vi.mocked(mockRepository.findById).mockResolvedValue(null);
+      vi.mocked(mockRepository.save).mockResolvedValue(undefined);
+      const dto: UpdateProductDTO = {
+        name: 'Updated Product',
+        description: 'Updated Description',
+        price: 199.99,
+        stock: 20,
+      };
+      await expect(productService.updateProduct('non-existent-id', dto)).rejects.toThrow('Product not found');
+    });
+  });
+  
 });
 

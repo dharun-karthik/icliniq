@@ -130,6 +130,27 @@ describe('Product', () => {
     });
   });
 
+  describe('reconstitute', () => {
+    it('should reconstitute a product with specific id', () => {
+      const productId = 'test-id-123';
+      const product = Product.reconstitute(
+        productId,
+        'Test Product',
+        'Test Description',
+        99.99,
+        10
+      );
+
+      expect(product).toBeDefined();
+      expect(product.getId()).toBe(productId);
+      expect(product.getName()).toBe('Test Product');
+      expect(product.getDescription()).toBe('Test Description');
+      expect(product.getPrice()).toBe(99.99);
+      expect(product.getStock()).toBe(10);
+    });
+
+  });
+
   describe('toJSON', () => {
     it('should return correct JSON representation', () => {
       const product = Product.create(
@@ -146,6 +167,18 @@ describe('Product', () => {
       expect(json).toHaveProperty('description', 'Test Description');
       expect(json).toHaveProperty('price', 99.99);
       expect(json).toHaveProperty('stock', 10);
+    });
+
+    it('should match values from getter methods', () => {
+      const product = Product.create('Test Product', 'Test Description', 99.99, 10);
+
+      const json = product.toJSON();
+
+      expect(json.id).toBe(product.getId());
+      expect(json.name).toBe(product.getName());
+      expect(json.description).toBe(product.getDescription());
+      expect(json.price).toBe(product.getPrice());
+      expect(json.stock).toBe(product.getStock());
     });
   });
 });

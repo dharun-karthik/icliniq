@@ -8,9 +8,6 @@ export class ProductInMemoryReporsitory implements IProductRepository {
 
     async save(product: Product): Promise<void> {
         const id = product.toJSON().id;
-        if (this.products.has(id)) {
-            throw new Error('Product with id already exists');
-        }
         this.products.set(id, product);
     }
 
