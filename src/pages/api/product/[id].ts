@@ -1,45 +1,18 @@
 import type { APIRoute } from "astro";
+import { getProductService } from "../../../lib/containers";
+import { ProductIdParamsSchema } from "../../../lib/validations/product-validation-schema";
+import { successResponse } from "../../../lib/api-responses";
+import { withParamsValidation } from "../../../lib/middleware/validation";
 
 export const prerender = false;
 
-export const GET: APIRoute = async ({ params }) => {
-  try {
-    const { id } = params;
-
-    if (!id) {
-      return new Response(
-        JSON.stringify({ error: "Product ID is required" }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+export const GET: APIRoute = withParamsValidation(
+    ProductIdParamsSchema,
+    async (_context, validatedParams) => {
+        const productService = getProductService();
+        const product = await productService.getProduct(validatedParams.id);
+        return successResponse(product);
     }
+);
 
-    const product = {
-      id: id,
-      name: `Product ${id}`,
-      description: `This is a detailed description for product ${id}. It features high-quality materials and excellent craftsmanship.`,
-      price: 99.99    
-    };
 
-    return new Response(JSON.stringify(product), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  } catch (error) {
-    return new Response(
-      JSON.stringify({ error: "Internal Server Error" }),
-      {
-        status: 500,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-  }
-};
