@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getProductService, getProductRepository } from './containers';
+import { getProductService, getProductRepository, getCartService, getCartRepository } from './containers';
 
 describe('containers', () => {
   describe('getProductRepository', () => {
@@ -35,6 +35,38 @@ describe('containers', () => {
     });
 
   });
-  
+
+  describe('getCartRepository', () => {
+    it('should return a CartInMemoryRepository instance', () => {
+      const repository = getCartRepository();
+
+      expect(repository).toBeDefined();
+      expect(repository.constructor.name).toBe('CartInMemoryRepository');
+    });
+
+    it('should return the same instance on multiple calls (singleton)', () => {
+      const repository1 = getCartRepository();
+      const repository2 = getCartRepository();
+
+      expect(repository1).toBe(repository2);
+    });
+  });
+
+  describe('getCartService', () => {
+    it('should return a CartService instance', () => {
+      const service = getCartService();
+
+      expect(service).toBeDefined();
+      expect(service.constructor.name).toBe('CartService');
+    });
+
+    it('should return the same instance on multiple calls (singleton)', () => {
+      const service1 = getCartService();
+      const service2 = getCartService();
+
+      expect(service1).toBe(service2);
+    });
+  });
+
 });
 

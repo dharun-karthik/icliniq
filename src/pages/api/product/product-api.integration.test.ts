@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import type { APIContext } from 'astro';
 import { POST as createProduct } from './index';
-import { GET as getProduct, PUT as updateProduct, DELETE as deleteProduct } from './[id]';
+import { GET as getProduct, PUT as updateProduct, DELETE as deleteProduct } from './[productId]';
 import { GET as getAllProducts } from './all';
 import { ProductInMemoryReporsitory } from '../../../infrastructure/datapersistence/ProductInMemoryReporsitory';
 import { ProductService } from '../../../application/product/ProductService';
@@ -209,7 +209,6 @@ describe('Product API Integration Tests', () => {
     });
 
     it('should return all products', async () => {
-      // Create multiple products first
       const products = [
         { name: 'Product 1', description: 'Desc 1', price: 10.99, stock: 5 },
         { name: 'Product 2', description: 'Desc 2', price: 20.99, stock: 10 },
@@ -225,7 +224,6 @@ describe('Product API Integration Tests', () => {
         await createProduct(mockContext);
       }
 
-      // Get all products
       const response = await getAllProducts(mockContext);
       const body = await response.json();
 
@@ -240,7 +238,6 @@ describe('Product API Integration Tests', () => {
 
   describe('GET /api/product/[id] - Get Product by ID', () => {
     it('should return a product when it exists', async () => {
-      // Create a product first
       const productData = {
         name: 'Test Product',
         description: 'Test Description',
@@ -258,8 +255,7 @@ describe('Product API Integration Tests', () => {
       const createBody = await createResponse.json();
       const productId = createBody.data.id;
 
-      // Get the product by ID
-      mockContext.params = { id: productId };
+      mockContext.params = { productId: productId };
       const response = await getProduct(mockContext);
       const body = await response.json();
 
@@ -273,7 +269,7 @@ describe('Product API Integration Tests', () => {
     });
 
     it('should return 404 when product does not exist', async () => {
-      mockContext.params = { id: 'non-existent-id' };
+      mockContext.params = { productId: 'non-existent-id' };
       const response = await getProduct(mockContext);
       const body = await response.json();
 
@@ -294,7 +290,7 @@ describe('Product API Integration Tests', () => {
     });
 
     it('should return 400 when id parameter is empty', async () => {
-      mockContext.params = { id: '' };
+      mockContext.params = { productId: '' };
       const response = await getProduct(mockContext);
       const body = await response.json();
 
@@ -324,7 +320,6 @@ describe('Product API Integration Tests', () => {
       const createBody = await createResponse.json();
       const productId = createBody.data.id;
 
-      // Update the product
       const updateData = {
         name: 'Updated Product',
         description: 'Updated Description',
@@ -332,7 +327,7 @@ describe('Product API Integration Tests', () => {
         stock: 15,
       };
 
-      mockContext.params = { id: productId };
+      mockContext.params = { productId: productId };
       mockContext.request = new Request(`http://localhost/api/product/${productId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -370,12 +365,11 @@ describe('Product API Integration Tests', () => {
       const createBody = await createResponse.json();
       const productId = createBody.data.id;
 
-      // Update only the name
       const updateData = {
         name: 'Updated Name Only',
       };
 
-      mockContext.params = { id: productId };
+      mockContext.params = { productId: productId };
       mockContext.request = new Request(`http://localhost/api/product/${productId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -398,7 +392,7 @@ describe('Product API Integration Tests', () => {
         name: 'Updated Product',
       };
 
-      mockContext.params = { id: 'non-existent-id' };
+      mockContext.params = { productId: 'non-existent-id' };
       mockContext.request = new Request('http://localhost/api/product/non-existent-id', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -432,10 +426,9 @@ describe('Product API Integration Tests', () => {
       const createBody = await createResponse.json();
       const productId = createBody.data.id;
 
-      // Try to update with empty object
       const updateData = {};
 
-      mockContext.params = { id: productId };
+      mockContext.params = { productId: productId };
       mockContext.request = new Request(`http://localhost/api/product/${productId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -474,7 +467,7 @@ describe('Product API Integration Tests', () => {
         name: '',
       };
 
-      mockContext.params = { id: productId };
+      mockContext.params = { productId: productId };
       mockContext.request = new Request(`http://localhost/api/product/${productId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -511,7 +504,7 @@ describe('Product API Integration Tests', () => {
       const productId = createBody.data.id;
 
       // Delete the product
-      mockContext.params = { id: productId };
+      mockContext.params = { productId: productId };
       const response = await deleteProduct(mockContext);
 
       expect(response.status).toBe(204);
@@ -526,7 +519,7 @@ describe('Product API Integration Tests', () => {
     });
 
     it('should return 404 when deleting non-existent product', async () => {
-      mockContext.params = { id: 'non-existent-id' };
+      mockContext.params = { productId: 'non-existent-id' };
       const response = await deleteProduct(mockContext);
       const body = await response.json();
 
@@ -570,7 +563,7 @@ describe('Product API Integration Tests', () => {
       expect(createBody.data.name).toBe('Workflow Product');
 
       // 2. Read the product
-      mockContext.params = { id: productId };
+      mockContext.params = { productId: productId };
       const readResponse = await getProduct(mockContext);
       const readBody = await readResponse.json();
 
@@ -646,7 +639,7 @@ describe('Product API Integration Tests', () => {
 
       // Update one product
       const updateData = { price: 25.00 };
-      mockContext.params = { id: productIds[1] };
+      mockContext.params = { productId: productIds[1] };
       mockContext.request = new Request(`http://localhost/api/product/${productIds[1]}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -660,7 +653,7 @@ describe('Product API Integration Tests', () => {
       expect(updateBody.data.price).toBe(25.00);
 
       // Delete one product
-      mockContext.params = { id: productIds[0] };
+      mockContext.params = { productId: productIds[0] };
       const deleteResponse = await deleteProduct(mockContext);
       expect(deleteResponse.status).toBe(204);
 
@@ -701,7 +694,7 @@ describe('Product API Integration Tests', () => {
       ];
 
       for (const update of updates) {
-        mockContext.params = { id: productId };
+        mockContext.params = { productId: productId };
         mockContext.request = new Request(`http://localhost/api/product/${productId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -712,7 +705,7 @@ describe('Product API Integration Tests', () => {
       }
 
       // Verify final state
-      mockContext.params = { id: productId };
+      mockContext.params = { productId: productId };
       const finalResponse = await getProduct(mockContext);
       const finalBody = await finalResponse.json();
 

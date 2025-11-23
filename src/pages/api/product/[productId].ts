@@ -11,7 +11,7 @@ export const GET: APIRoute = withParamsValidation(
     ProductIdParamsSchema,
     async (_context, validatedParams) => {
         const productService = getProductService();
-        const product = await productService.getProduct(validatedParams.id);
+        const product = await productService.getProduct(validatedParams.productId);
         return successResponse(product);
     }
 );
@@ -22,7 +22,7 @@ export const PUT: APIRoute = withParamsValidation(
         UpdateProductSchema,
         async (_context, validatedData: UpdateProductDTO) => {
             const productService = getProductService();
-            const product = await productService.updateProduct(validatedParams.id, validatedData);
+            const product = await productService.updateProduct(validatedParams.productId, validatedData);
             return successResponse(product);
         }
     )(context)
@@ -32,7 +32,7 @@ export const DELETE: APIRoute = withParamsValidation(
     ProductIdParamsSchema,
     async (_context, validatedParams) => {
         const productService = getProductService();
-        await productService.deleteProduct(validatedParams.id);
+        await productService.deleteProduct(validatedParams.productId);
         return noContentResponse();
     }
 );

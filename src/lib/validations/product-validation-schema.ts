@@ -50,7 +50,7 @@ export const UpdateProductSchema = z.object({
 export type UpdateProductInput = z.infer<typeof UpdateProductSchema>;
 
 export const ProductIdParamsSchema = z.object({
-  id: z.string({
+  productId: z.string({
     required_error: "Product ID is required",
     invalid_type_error: "Product ID must be a string",
   }).min(1, "Product ID cannot be empty"),
