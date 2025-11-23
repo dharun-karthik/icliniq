@@ -1,15 +1,15 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import type { APIContext } from 'astro';
-import { POST as createProduct } from './index';
-import { GET as getProduct, PUT as updateProduct, DELETE as deleteProduct } from './[productId]';
-import { GET as getAllProducts } from './all';
-import { ProductInMemoryReporsitory } from '../../../infrastructure/datapersistence/ProductInMemoryReporsitory';
-import { ProductService } from '../../../application/product/ProductService';
+import { POST as createProduct } from '../../pages/api/product/index';
+import { GET as getProduct, PUT as updateProduct, DELETE as deleteProduct } from '../../pages/api/product/[productId]';
+import { GET as getAllProducts } from '../../pages/api/product/all';
+import { ProductInMemoryReporsitory } from '../../infrastructure/datapersistence/ProductInMemoryReporsitory';
+import { ProductService } from '../../application/product/ProductService';
 
 let testRepository: ProductInMemoryReporsitory;
 let testService: ProductService;
 
-vi.mock('../../../lib/containers', () => ({
+vi.mock('../../lib/containers', () => ({
   getProductRepository: () => testRepository,
   getProductService: () => testService,
 }));

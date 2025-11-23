@@ -1,20 +1,20 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import type { APIContext } from 'astro';
-import { POST as addItemToCart, PATCH as updateItemQuantity } from './index';
-import { GET as getAllCartItems } from './all';
-import { DELETE as removeItemFromCart } from './[productId]';
-import { CartInMemoryRepository } from '../../../infrastructure/datapersistence/CartInMemoryRepository';
-import { CartService } from '../../../application/cart/CartService';
-import { ProductService } from '../../../application/product/ProductService';
-import { ProductInMemoryReporsitory } from '../../../infrastructure/datapersistence/ProductInMemoryReporsitory';
-import { Product } from '../../../domain/product/entities/Product';
+import { POST as addItemToCart, PATCH as updateItemQuantity } from '../../pages/api/cart/index';
+import { GET as getAllCartItems } from '../../pages/api/cart/all';
+import { DELETE as removeItemFromCart } from '../../pages/api/cart/[productId]';
+import { CartInMemoryRepository } from '../../infrastructure/datapersistence/CartInMemoryRepository';
+import { CartService } from '../../application/cart/CartService';
+import { ProductService } from '../../application/product/ProductService';
+import { ProductInMemoryReporsitory } from '../../infrastructure/datapersistence/ProductInMemoryReporsitory';
+import { Product } from '../../domain/product/entities/Product';
 
 let testCartRepository: CartInMemoryRepository;
 let testCartService: CartService;
 let testProductRepository: ProductInMemoryReporsitory;
 let testProductService: ProductService;
 
-vi.mock('../../../lib/containers', () => ({
+vi.mock('../../lib/containers', () => ({
   getCartRepository: () => testCartRepository,
   getCartService: () => testCartService,
   getProductRepository: () => testProductRepository,
