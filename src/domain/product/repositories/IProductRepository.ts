@@ -9,5 +9,7 @@ export interface IProductRepository {
 
   findAll(): Promise<Product[]>;
 
+  delete(id: ProductId): Promise<void>;
+
 }
 

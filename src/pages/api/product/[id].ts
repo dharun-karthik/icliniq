@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { getProductService } from "../../../lib/containers";
 import { ProductIdParamsSchema, UpdateProductSchema } from "../../../lib/validations/product-validation-schema";
-import { successResponse } from "../../../lib/api-responses";
+import { successResponse, noContentResponse } from "../../../lib/api-responses";
 import { withParamsValidation, withBodyValidation } from "../../../lib/middleware/validation";
 import type { UpdateProductDTO } from "../../../application/product/dto/ProductDTOs";
 
@@ -28,4 +28,12 @@ export const PUT: APIRoute = withParamsValidation(
     )(context)
 );
 
+export const DELETE: APIRoute = withParamsValidation(
+    ProductIdParamsSchema,
+    async (_context, validatedParams) => {
+        const productService = getProductService();
+        await productService.deleteProduct(validatedParams.id);
+        return noContentResponse();
+    }
+);
 

@@ -68,3 +68,9 @@ export function internalErrorResponse(message: string = 'Internal server error')
   return errorResponse(message, 500, 'INTERNAL_ERROR');
 }
 
+export function noContentResponse(): Response {
+  return new Response(null, {
+    status: 204,
+  });
+}
+

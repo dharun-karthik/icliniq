@@ -13,6 +13,7 @@ describe('ProductService', () => {
       save: vi.fn(),
       findById: vi.fn(),
       findAll: vi.fn(),
+      delete: vi.fn(),
     };
     productService = new ProductService(mockRepository);
   });
@@ -195,6 +196,39 @@ describe('ProductService', () => {
       await expect(productService.updateProduct('non-existent-id', dto)).rejects.toThrow('Product not found');
     });
   });
-  
+
+  describe('deleteProduct', () => {
+    it('should delete a product successfully', async () => {
+      const product = Product.create('Test Product', 'Test Description', 99.99, 10);
+      vi.mocked(mockRepository.findById).mockResolvedValue(product);
+      vi.mocked(mockRepository.delete).mockResolvedValue(undefined);
+
+      await productService.deleteProduct('test-id-123');
+
+      expect(mockRepository.delete).toHaveBeenCalledOnce();
+    });
+
+    it('should call repository delete with correct ProductId', async () => {
+      const product = Product.create('Test Product', 'Test Description', 99.99, 10);
+      vi.mocked(mockRepository.findById).mockResolvedValue(product);
+      vi.mocked(mockRepository.delete).mockResolvedValue(undefined);
+
+      await productService.deleteProduct('test-id-123');
+
+      expect(mockRepository.delete).toHaveBeenCalledOnce();
+      const callArg = vi.mocked(mockRepository.delete).mock.calls[0][0];
+      expect(callArg.getValue()).toBe('test-id-123');
+    });
+
+    it('should throw error when product does not exist', async () => {
+      vi.mocked(mockRepository.findById).mockResolvedValue(null);
+
+      await expect(productService.deleteProduct('non-existent-id')).rejects.toThrow('Product not found');
+      expect(mockRepository.delete).not.toHaveBeenCalled();
+
+    });
+
+  });
+
 });
 

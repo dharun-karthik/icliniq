@@ -61,6 +61,16 @@ export class ProductService {
     return products.map(product => this.toDTO(product));
   }
 
+  async deleteProduct(id: string): Promise<void> {
+    const product = await this.productRepository.findById(ProductId.create(id));
+
+    if (!product) {
+      throw new EntityNotFoundError('Product not found');
+    }
+
+    await this.productRepository.delete(ProductId.create(id));
+  }
+
   private toDTO(product: Product): ProductResponseDTO {
     const json = product.toJSON();
     return {

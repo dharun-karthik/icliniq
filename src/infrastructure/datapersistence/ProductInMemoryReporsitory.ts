@@ -18,5 +18,9 @@ export class ProductInMemoryReporsitory implements IProductRepository {
     async findAll(): Promise<Product[]> {
         return Array.from(this.products.values());
     }
+
+    async delete(id: ProductId): Promise<void> {
+        this.products.delete(id.getValue());
+    }
 }
 

@@ -125,5 +125,21 @@ describe('InMemoryProductRepository', () => {
       expect(typeof products[0].toJSON).toBe('function');
     });
   });
+
+  describe('delete', () => {
+    it('should delete a product successfully', async () => {
+      const product = Product.create('Test Product', 'Test Description', 99.99, 10);
+      await repository.save(product);
+
+      const productJson = product.toJSON();
+      const productId = ProductId.create(productJson.id);
+
+      await repository.delete(productId);
+
+      const found = await repository.findById(productId);
+      expect(found).toBeNull();
+    });
+
+  });
 });
 
