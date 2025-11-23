@@ -1,5 +1,11 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import node from '@astrojs/node';
 
 // https://astro.build/config
-export default defineConfig({});
+export default defineConfig({
+  // Adapter is required for server-side rendering of dynamic API routes and the UI to be pre-rendered
+  adapter: node({
+    mode: 'standalone',
+  }),
+});
