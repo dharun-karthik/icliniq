@@ -593,18 +593,6 @@ npm test -- product
 
 ```
 
-### Test Coverage Summary
-
-| Layer | Test Files | Tests | Status |
-|-------|-----------|-------|--------|
-| **Presentation** | 18 | 126 | ✅ 100% |
-| **Domain** | 8 | 102 | ✅ 100% |
-| **Application** | 2 | 32 | ✅ 100% |
-| **Infrastructure** | 2 | 20 | ✅ 100% |
-| **Integration** | 2 | 43 | ✅ 100% |
-| **Middleware** | 2 | 33 | ✅ 100% |
-| **Total** | **30** | **333** | **✅ 100%** |
-
 ### Testing Tools
 
 - **Vitest**: Fast unit test framework
